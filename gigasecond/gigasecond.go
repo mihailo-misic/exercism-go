@@ -4,6 +4,6 @@ import "time"
 
 const testVersion = 4
 
-func AddGigasecond(time.Time) time.Time {
-    return time.Now()
+func AddGigasecond(date time.Time) time.Time {
+	return date
 }
