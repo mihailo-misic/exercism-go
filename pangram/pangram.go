@@ -1,21 +1,18 @@
 package pangram
 
-import (
-	"strings"
-)
+import "strings"
 
 const testVersion = 1
 
 func IsPangram(s string) bool {
-	if len(s) == 0 {
-		return false
-	}
-
+	s = strings.ToLower(s)
 	alph := "abcdefghijklmnopqrstuvwxyz"
 
-	for _, l := range s {
-		alph = strings.Replace(alph, strings.ToLower(string(l)), "", -1)
+	for _, l := range alph {
+		if !strings.ContainsAny(s, string(l)) {
+			return false
+		}
 	}
 
-	return len(alph) == 0
+	return true
 }
