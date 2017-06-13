@@ -1,8 +1,24 @@
 package raindrops
 
+import "strconv"
+
 const testVersion = 3
 
-func Convert(int) string
+func Convert(i int) string {
+	var s string
 
-// Don't forget the test program has a benchmark too.
-// How fast does your Convert convert?
+	if i%3 == 0 {
+		s = "Pling"
+	}
+	if i%5 == 0 {
+		s += "Plang"
+	}
+	if i%7 == 0 {
+		s += "Plong"
+	}
+
+	if len(s) > 0 {
+		return s
+	}
+	return strconv.Itoa(i)
+}
