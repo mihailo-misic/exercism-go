@@ -5,7 +5,7 @@ import "strconv"
 const testVersion = 3
 
 func Convert(i int) string {
-	var s string
+	s := ""
 
 	if i%3 == 0 {
 		s = "Pling"
@@ -16,9 +16,9 @@ func Convert(i int) string {
 	if i%7 == 0 {
 		s += "Plong"
 	}
-
 	if len(s) > 0 {
 		return s
 	}
+
 	return strconv.Itoa(i)
 }
