@@ -1,15 +1,15 @@
 package gigasecond
 
 import (
-    "time"
-    "math"
+	"math"
+	"time"
 )
 
 const testVersion = 4
 
 // Avg = 1.278s
 func AddGigasecond(date time.Time) time.Time {
-    return date.Add(time.Second * time.Duration(math.Pow(10, 9)))
+	return date.Add(time.Second * time.Duration(math.Pow(10, 9)))
 }
 
 /*
