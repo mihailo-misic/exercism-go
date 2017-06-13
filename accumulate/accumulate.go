@@ -6,8 +6,7 @@ func Accumulate(vals []string, funk func(string) string) []string {
 	var r []string
 
 	for _, v := range vals {
-		c := funk(v)
-		r = append(r, c)
+		r = append(r, funk(v))
 	}
 
 	return r
