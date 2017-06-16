@@ -1,46 +1,38 @@
+// Package erratum has tools for throwing errors.
 package erratum
-
-import "io"
 
 const testVersion = 2
 
-type TransientError struct {
-	err error
-}
+// I've extracted the types and helper methods in another file (types.go).
 
-// ResourceOpener is a function that creates a resource.
-//
-// It may return a wrapped error of type TransientError. In this case the resource
-// is temporarily unavailable and the caller should retry soon.
-type ResourceOpener func() (Resource, error)
+// Use opens a resource and adds input to it, returning the error if any.
+func Use(o ResourceOpener, input string) (err error) {
+	r, err := o()
+	_, ok := err.(TransientError)
 
-func (e TransientError) Error() string {
-	return e.err.Error()
-}
+	// If the error is Transient error try again, until it's not.
+	for ok {
+		r, err = o()
+		_, ok = err.(TransientError)
+	}
+	// If there's an error opening and it's not Transient return it.
+	if err != nil {
+		return err
+	}
 
-type FrobError struct {
-	defrobTag string
-	inner     error
-}
+	defer func() {
+		// Recover from a panic (attack)!
+		if rec := recover(); rec != nil {
+			// Check if the error is a FrobError. If it is use Defrob.
+			if v, forbErr := rec.(FrobError); forbErr {
+				r.Defrob(v.defrobTag)
+			}
+			err, _ = rec.(error)
+		}
+		r.Close()
+	}()
 
-func (e FrobError) Error() string {
-	return e.inner.Error()
-}
+	r.Frob(input)
 
-type Resource interface {
-	io.Closer
-
-	// Frob does something with the input string.
-	// Because this is an incredibly badly designed system if there is an error
-	// it panics.
-	//
-	// The paniced error may be a FrobError in which case Defrob should be called
-	// with the defrobTag string.
-	Frob(string)
-
-	Defrob(string)
-}
-
-func Use(o ResourceOpener, input string) error {
-
+	return err
 }
