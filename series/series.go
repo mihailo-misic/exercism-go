@@ -20,7 +20,7 @@ func UnsafeFirst(i int, s string) string {
 
 func First(i int, s string) (res string, ok bool) {
 	if len(s) >= i {
-		return s[:i], true
+		return UnsafeFirst(i, s), true
 	}
 
 	return "", false
