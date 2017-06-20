@@ -1,7 +1,5 @@
 package letter
 
-import "fmt"
-
 const testVersion = 1
 
 type FreqMap map[rune]int
@@ -15,15 +13,20 @@ func Frequency(s string) FreqMap {
 }
 
 func ConcurrentFrequency(text []string) FreqMap {
-	c1 := make(chan FreqMap)
-	c2 := make(chan FreqMap)
-	c3 := make(chan FreqMap)
+	res := FreqMap{}
+	semChan := make(chan FreqMap, len(text))
+
 	for i := 0; i < len(text); i++ {
-		go Frequency(text[i])
+		go func(i int) {
+			semChan <- Frequency(text[i])
+		}(i)
 	}
-	n1 := <-c1
-	n2 := <-c2
-	n3 := <-c3
-	fmt.Println(n1, n2, n3)
-	return n1 + n2 + n3
+
+	for i := 0; i < len(text); i++ {
+		for k, v := range <-semChan {
+			res[k] += v
+		}
+	}
+
+	return res
 }
